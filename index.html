@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlacePro | Student Placement Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="brand-mark">P</span><div><b>PlacePro</b><small>Placement Portal</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav active" data-page="dashboard">▦ <span>Dashboard</span></button>
+    <button class="nav" data-page="students">♙ <span>Students</span></button>
+    <button class="nav" data-page="companies">▣ <span>Companies</span></button>
+    <button class="nav" data-page="jobs">▤ <span>Job Drives</span></button>
+    <button class="nav" data-page="applications">▧ <span>Applications</span></button>
+    <div class="sidebar-bottom"><div class="avatar">AD</div><div><b>Admin User</b><small>Placement Officer</small></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button class="mobile-menu" id="menuBtn">☰</button><div><span class="eyebrow">PLACEMENT OFFICE</span><h1 id="pageTitle">Dashboard</h1></div><div class="top-right"><span class="status-dot"></span><span>System Online</span><div class="top-avatar">AD</div></div></header>
+    <section class="content">
+      <div id="dashboardPage" class="page">
+        <div class="welcome"><div><span class="eyebrow light">OVERVIEW</span><h2>Good morning, Admin 👋</h2><p>Here’s what’s happening with campus placements.</p></div><button class="btn btn-white" onclick="showPage('jobs')">＋ Create Job Drive</button></div>
+        <div class="stats">
+          <article class="stat-card"><div class="stat-icon purple">♙</div><span>Total Students</span><strong id="statStudents">0</strong><small>Registered in portal</small></article>
+          <article class="stat-card"><div class="stat-icon blue">▣</div><span>Partner Companies</span><strong id="statCompanies">0</strong><small>Recruiting partners</small></article>
+          <article class="stat-card"><div class="stat-icon orange">▤</div><span>Active Job Drives</span><strong id="statJobs">0</strong><small>Open opportunities</small></article>
+          <article class="stat-card"><div class="stat-icon green">✓</div><span>Applications</span><strong id="statApplications">0</strong><small>Student applications</small></article>
+        </div>
+        <div class="grid-two">
+          <section class="panel"><div class="panel-head"><div><h3>Recent Applications</h3><p>Latest student applications</p></div><button class="text-btn" onclick="showPage('applications')">View all →</button></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLE</th><th>STATUS</th></tr></thead><tbody id="recentApplications"></tbody></table></div></section>
+          <section class="panel"><div class="panel-head"><div><h3>Upcoming Job Drives</h3><p>Recruitment schedule</p></div><button class="text-btn" onclick="showPage('jobs')">View all →</button></div><div id="upcomingJobs" class="upcoming-list"></div></section>
+        </div>
+        <div class="panel tip"><div class="tip-icon">✦</div><div><b>Placement office tip</b><p>Keep student profiles and academic records updated to make eligibility checks easier.</p></div></div>
+      </div>
+
+      <div id="studentsPage" class="page hidden">
+        <div class="page-intro"><div><h2>Student Directory</h2><p>Manage student profiles and placement eligibility.</p></div><button class="btn btn-primary" onclick="openModal('studentModal')">＋ Add Student</button></div>
+        <section class="panel"><div class="toolbar"><input id="studentSearch" placeholder="Search by name, email or course..." oninput="renderStudents()"><span class="muted" id="studentCount"></span></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>COURSE</th><th>CGPA</th><th>BACKLOGS</th><th>ELIGIBILITY</th><th>ACTION</th></tr></thead><tbody id="studentsTable"></tbody></table></div></section>
+      </div>
+
+      <div id="companiesPage" class="page hidden">
+        <div class="page-intro"><div><h2>Recruiting Companies</h2><p>Maintain company information and hiring contacts.</p></div><button class="btn btn-primary" onclick="openModal('companyModal')">＋ Add Company</button></div>
+        <div class="company-grid" id="companyGrid"></div>
+      </div>
+
+      <div id="jobsPage" class="page hidden">
+        <div class="page-intro"><div><h2>Job Drives</h2><p>Publish opportunities and manage recruitment drives.</p></div><button class="btn btn-primary" onclick="openModal('jobModal')">＋ Create Job Drive</button></div>
+        <section class="panel"><div class="toolbar"><input id="jobSearch" placeholder="Search job title or company..." oninput="renderJobs()"></div><div class="table-wrap"><table><thead><tr><th>POSITION</th><th>COMPANY</th><th>PACKAGE</th><th>DEADLINE</th><th>STATUS</th></tr></thead><tbody id="jobsTable"></tbody></table></div></section>
+      </div>
+
+      <div id="applicationsPage" class="page hidden">
+        <div class="page-intro"><div><h2>Applications</h2><p>Track applications submitted by students.</p></div><button class="btn btn-primary" onclick="openModal('applicationModal')">＋ Add Application</button></div>
+        <section class="panel"><div class="toolbar"><input id="appSearch" placeholder="Search student, role or company..." oninput="renderApplications()"><select id="statusFilter" onchange="renderApplications()"><option value="">All statuses</option><option>Applied</option><option>Shortlisted</option><option>Selected</option><option>Rejected</option></select></div><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>JOB ROLE</th><th>COMPANY</th><th>APPLIED ON</th><th>STATUS</th><th>UPDATE</th></tr></thead><tbody id="applicationsTable"></tbody></table></div></section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Student modal -->
+  <div class="modal" id="studentModal"><form class="modal-box" id="studentForm"><div class="modal-head"><div><h3>Add Student</h3><p>Enter student academic and contact details.</p></div><button type="button" class="close" onclick="closeModal('studentModal')">×</button></div><div class="form-grid"><label>Full name<input name="name" required placeholder="e.g. Rahul Sharma"></label><label>Email<input name="email" type="email" required placeholder="student@email.com"></label><label>Course<input name="course" required placeholder="e.g. BCA"></label><label>CGPA<input name="cgpa" type="number" min="0" max="10" step=".01" required placeholder="e.g. 7.5"></label><label>Backlogs<input name="backlogs" type="number" min="0" value="0" required></label><label>Phone<input name="phone" placeholder="Mobile number"></label></div><div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="closeModal('studentModal')">Cancel</button><button class="btn btn-primary">Save Student</button></div></form></div>
+  <div class="modal" id="companyModal"><form class="modal-box" id="companyForm"><div class="modal-head"><div><h3>Add Company</h3><p>Add a recruiting partner.</p></div><button type="button" class="close" onclick="closeModal('companyModal')">×</button></div><div class="form-grid"><label>Company name<input name="name" required placeholder="Company name"></label><label>Industry<input name="industry" required placeholder="e.g. IT Services"></label><label>HR contact<input name="contact" placeholder="Contact person"></label><label>Email<input name="email" type="email" placeholder="hr@company.com"></label></div><div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="closeModal('companyModal')">Cancel</button><button class="btn btn-primary">Save Company</button></div></form></div>
+  <div class="modal" id="jobModal"><form class="modal-box" id="jobForm"><div class="modal-head"><div><h3>Create Job Drive</h3><p>Publish a new campus opportunity.</p></div><button type="button" class="close" onclick="closeModal('jobModal')">×</button></div><div class="form-grid"><label>Job title<input name="title" required placeholder="e.g. Junior Web Developer"></label><label>Company<select name="company" id="jobCompany" required></select></label><label>Package (LPA)<input name="package" type="number" min="0" step=".1" required placeholder="e.g. 4.5"></label><label>Application deadline<input name="deadline" type="date" required></label><label>Minimum CGPA<input name="minCgpa" type="number" min="0" max="10" step=".1" value="6" required></label><label>Eligible course<input name="course" placeholder="Any / BCA / B.Tech"></label></div><div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="closeModal('jobModal')">Cancel</button><button class="btn btn-primary">Publish Drive</button></div></form></div>
+  <div class="modal" id="applicationModal"><form class="modal-box" id="applicationForm"><div class="modal-head"><div><h3>Add Application</h3><p>Record a student's application.</p></div><button type="button" class="close" onclick="closeModal('applicationModal')">×</button></div><div class="form-grid"><label>Student<select name="student" id="appStudent" required></select></label><label>Job drive<select name="job" id="appJob" required></select></label><label>Status<select name="status"><option>Applied</option><option>Shortlisted</option><option>Selected</option><option>Rejected</option></select></label></div><div class="modal-actions"><button type="button" class="btn btn-ghost" onclick="closeModal('applicationModal')">Cancel</button><button class="btn btn-primary">Save Application</button></div></form></div>
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+</body></html>
